@@ -103,6 +103,8 @@ public class MainActivity extends ProgressActivity implements OnPageChangeListen
     private static String PDF_PASSWORD = "";
     private SharedPreferences prefManager;
 
+    private boolean askForRating = false;
+
     @ViewById
     PDFView pdfView;
 
@@ -126,11 +128,13 @@ public class MainActivity extends ProgressActivity implements OnPageChangeListen
 
         mgr = (PrintManager) getSystemService(PRINT_SERVICE);
 
-        // Custom condition: 5 days and 5 launches
-        RateThisApp.Config config = new RateThisApp.Config(5, 5);
-        RateThisApp.init(config);
-        RateThisApp.onCreate(this);
-        RateThisApp.showRateDialogIfNeeded(this);
+        if(askForRating) {
+            // Custom condition: 5 days and 5 launches
+            RateThisApp.Config config = new RateThisApp.Config(5, 5);
+            RateThisApp.init(config);
+            RateThisApp.onCreate(this);
+            RateThisApp.showRateDialogIfNeeded(this);
+        }
     }
 
     private void onFirstInstall() {
