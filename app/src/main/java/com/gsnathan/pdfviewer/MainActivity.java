@@ -105,6 +105,8 @@ public class MainActivity extends ProgressActivity implements OnPageChangeListen
 
     private boolean askForRating = false;
 
+    private DocumentPageStorage pageStorage;
+
     @ViewById
     PDFView pdfView;
 
@@ -135,6 +137,20 @@ public class MainActivity extends ProgressActivity implements OnPageChangeListen
             RateThisApp.onCreate(this);
             RateThisApp.showRateDialogIfNeeded(this);
         }
+
+        pageStorage = new DocumentPageStorage(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        pageStorage.save();
     }
 
     private void onFirstInstall() {
@@ -270,6 +286,7 @@ public class MainActivity extends ProgressActivity implements OnPageChangeListen
                 .autoSpacing(prefManager.getBoolean("scroll_pref", false))
                 .pageSnap(prefManager.getBoolean("snap_pref", false))
                 .pageFling(prefManager.getBoolean("fling_pref", false))
+                .defaultPage(pageStorage.getLastPage(pdfFileName))
                 .load();
     }
 
@@ -350,6 +367,7 @@ public class MainActivity extends ProgressActivity implements OnPageChangeListen
 
     @Override
     public void onPageChanged(int page, int pageCount) {
+        pageStorage.update(pdfFileName, page);
         pageNumber = page;
         setTitle(String.format("%s %s / %s", pdfFileName + " ", page + 1, pageCount));
     }
